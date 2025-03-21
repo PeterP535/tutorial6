@@ -21,7 +21,7 @@ fn handle_connection(mut stream: TcpStream) {
     
     println!("Request: {:#?}", http_request);
 }
-
+```
 
 
 # Commit 2
