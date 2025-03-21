@@ -134,3 +134,27 @@ Untuk meningkatkan performa dan menghindari antrean panjang, beberapa solusi yan
 ### 5. Kesimpulan
 Server saat ini menggunakan pendekatan single-threaded sehingga tidak dapat menangani request secara paralel. Akibatnya, request yang memerlukan waktu lama (seperti `/sleep`) akan menghambat request lain. Untuk mengatasi ini, pendekatan multi-threading atau asynchronous perlu diterapkan agar server tetap responsif dan dapat menangani banyak pengguna secara bersamaan.
 
+# Commit 5 multithreaded server using threadpool
+
+## **Mengapa Menggunakan Multithreading?**
+Ketika sebuah server menerima banyak permintaan dari pengguna, server harus menangani setiap permintaan tanpa membuat pengguna lain menunggu. Jika server hanya berjalan dalam satu thread (**single-threaded**), maka:
+
+- **Setiap permintaan diproses satu per satu**, sehingga permintaan yang lebih lambat (misalnya, akses ke `/sleep` yang butuh 10 detik) akan membuat permintaan lain ikut terhambat.
+- **Tidak dapat menangani banyak pengguna sekaligus**, karena setiap koneksi harus menunggu hingga koneksi sebelumnya selesai.
+
+Solusi dari masalah ini adalah **multithreading**, yang memungkinkan beberapa koneksi diproses secara bersamaan menggunakan beberapa thread.
+
+## **Apa Itu Thread Pool?**
+**Thread pool** adalah teknik dalam multithreading yang menggunakan **sejumlah thread tetap (worker threads)** untuk menangani tugas secara **bergiliran**. Ketika sebuah koneksi masuk:
+
+1. Server akan menugaskan koneksi tersebut ke salah satu thread yang tersedia di dalam **thread pool**.
+2. Jika semua thread sedang sibuk, koneksi akan **menunggu** hingga ada thread yang selesai dan siap menerima tugas baru.
+3. Dengan cara ini, server tidak perlu **membuat thread baru setiap kali ada koneksi baru**, sehingga lebih **efisien** dalam penggunaan sumber daya.
+
+## **Mengapa Menggunakan Thread Pool?**
+Menggunakan thread pool memiliki beberapa keuntungan dibandingkan dengan hanya menggunakan multithreading biasa:
+
+ **Menghemat sumber daya**: Thread dibuat sekali dan digunakan ulang, sehingga tidak ada overhead dalam pembuatan dan penghancuran thread.  
+ **Lebih cepat**: Mengurangi waktu pemrosesan karena thread sudah siap digunakan.  
+ **Lebih scalable**: Dapat menangani lebih banyak koneksi tanpa membebani sistem.  
+ **Mencegah crash akibat terlalu banyak thread**: Dengan membatasi jumlah thread, server tidak akan kehabisan memori atau mengalami overhead CPU karena terlalu banyak thread aktif.

@@ -2,16 +2,26 @@ use std::{
    fs,
    io::{prelude::*, BufReader},
    net::{TcpListener, TcpStream},
-   thread, time::Duration,
+   thread,
+   time::Duration,
 };
+use threadpool::ThreadPool;
+
+const THREAD_COUNT: usize = 4; // Number of worker threads
 
 fn main() {
    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
-   println!("Server running on http://127.0.0.1:7878");
+   let pool = ThreadPool::new(THREAD_COUNT);
+
+   println!("Server running on http://127.0.0.1:7878 with {THREAD_COUNT} worker threads");
 
    for stream in listener.incoming() {
        let stream = stream.unwrap();
-       handle_connection(stream);
+
+       // Assign the connection handling to a worker thread
+       pool.execute(|| {
+           handle_connection(stream);
+       });
    }
 }
 
