@@ -2,7 +2,7 @@
 
 
 
-1. Dokumentasi `handle_connection` dalam Rust
+# Dokumentasi `handle_connection` dalam Rust
 
 ## Fungsi `handle_connection`
 
@@ -21,3 +21,10 @@ fn handle_connection(mut stream: TcpStream) {
     
     println!("Request: {:#?}", http_request);
 }
+
+
+
+# Commit 2
+## Screenshot
+
+![commit2](images/commit2.png)
